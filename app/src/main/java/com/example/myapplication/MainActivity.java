@@ -6,26 +6,21 @@ import androidx.core.app.ActivityCompat;
 import android.Manifest;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
-import android.bluetooth.BluetoothSocket;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.io.IOException;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
+
 import java.util.Set;
-import java.util.UUID;
+
 
 public class MainActivity extends AppCompatActivity {
 
@@ -36,7 +31,6 @@ public class MainActivity extends AppCompatActivity {
     ListView listView;
     Set<BluetoothDevice> pairedDevices;
     ArrayAdapter<String> btArrayAdapter;
-    ArrayList<String> deviceAddressArray;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,20 +59,17 @@ public class MainActivity extends AppCompatActivity {
 
         // show paired devices
         btArrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1);
-        deviceAddressArray = new ArrayList<>();
         listView.setAdapter(btArrayAdapter);
 
     }
 
     public void onClickButtonPaired(View view){
         btArrayAdapter.clear();
-        if(deviceAddressArray!=null && !deviceAddressArray.isEmpty()){ deviceAddressArray.clear(); }
         Set<BluetoothDevice> pairedDevices = btAdapter.getBondedDevices();
         if (pairedDevices.size() > 0) {
             // There are paired devices. Get the name and address of each paired device.
             for (BluetoothDevice device : pairedDevices) {
-                btArrayAdapter.add(device.getName());
-                deviceAddressArray.add(device.getAddress());
+                btArrayAdapter.add(device.getName() + "\n" + device.getAddress());
             }
         }
     }
@@ -110,8 +101,7 @@ public class MainActivity extends AppCompatActivity {
                 // Discovery has found a device. Get the BluetoothDevice
                 // object and its info from the Intent.
                 BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
-                btArrayAdapter.add(device.getName());
-                deviceAddressArray.add(device.getAddress());
+                btArrayAdapter.add(device.getName() + "\n" + device.getAddress());
                 btArrayAdapter.notifyDataSetChanged();
             }
         }
